@@ -4,13 +4,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from llm_module import ResumeAnalyzer
 import uvicorn
 import threading
-import json
 import os
 
-# Initialize FastAPI app
 app = FastAPI()
 
-origins = ["*"]  # Allow all origins (for testing; restrict in production)
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,25 +18,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize ResumeAnalyzer (outside of Streamlit's main function)
 try:
     analyzer = ResumeAnalyzer()
 except Exception as e:
     print(f"Error initializing analyzer: {e}")
     analyzer = None
 
-# API Endpoint for Resume Analysis
 @app.post("/analyze")
-async def analyze_resume_api(file_path: str): # Expects a file path
-    if analyzer is None:
-        raise HTTPException(status_code=500, detail="Analyzer could not be initialized")
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=400, detail="File path not found")
-    try:
-        analysis = analyzer.analyze_resume(file_path)
-        return analysis
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+async def analyze_resume_api(file_path: str):
+     if analyzer is None:
+         raise HTTPException(status_code=500, detail="Analyzer could not be initialized")
+     if not os.path.exists(file_path):
+         raise HTTPException(status_code=400, detail="File path not found")
+     try:
+         analysis = analyzer.analyze_resume(file_path)
+         return analysis
+     except Exception as e:
+         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/chat")
 async def chat_with_resume_api(prompt: str, context: dict = None):
@@ -50,7 +46,6 @@ async def chat_with_resume_api(prompt: str, context: dict = None):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Streamlit App
 def save_uploaded_file(uploaded_file):
     try:
         with open(uploaded_file.name, 'wb') as f:
@@ -90,14 +85,14 @@ def main():
             response = analyzer.chat_analyze(user_question, st.session_state.analysis_results)
             st.write("Response:", response)
 
-# Run both Streamlit and FastAPI
 if __name__ == "__main__":
     import threading
 
     def run_streamlit():
         main()
+
     def run_fastapi():
-        uvicorn.run(app, host="0.0.0.0", port=8000)
+        uvicorn.run(app, host="0.0.0.0", port=8001)  # Change the port here
 
     streamlit_thread = threading.Thread(target=run_streamlit)
     fastapi_thread = threading.Thread(target=run_fastapi)
