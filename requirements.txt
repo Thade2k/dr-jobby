@@ -38,3 +38,4 @@ urllib3==2.3.0
 virtualenv==20.28.1
 websocket-client==1.8.0
 wsproto==1.2.0
+PyPDF2
