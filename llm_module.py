@@ -3,6 +3,7 @@ from transformers import T5ForConditionalGeneration, T5Tokenizer
 import PyPDF2
 import docx
 import re
+import docx
 from typing import Dict, List
 
 class ResumeAnalyzer:
