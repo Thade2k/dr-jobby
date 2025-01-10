@@ -7,3 +7,4 @@ python-docx
 fastapi
 uvicorn
 requests
+sentencepiece  
