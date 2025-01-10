@@ -1,0 +1,7 @@
+transformers
+torch
+pandas
+transformers
+torch
+PyPDF2
+python-docx
